@@ -3,17 +3,17 @@
  * @since FontEndDeployer 1.0.1
  */
 
-var autoPrefixer = require('gulp-autoprefixer'),
-    browserSync = require('browser-sync'),
-    gulp = require('gulp'),
-    gulpClean = require('gulp-clean'),
-    gulpConcat = require('gulp-concat'),
-    gulpCssNano = require('gulp-cssnano'),
-    gulpImageMin = require('gulp-imagemin'),
-    gulpSass = require('gulp-sass'),
-    gulpUglifyEs = require('gulp-uglify-es').default,
-    pngQuant = require('pngquant'),
-    args = require('yargs').argv;
+var autoPrefixer    = require('gulp-autoprefixer'),
+    browserSync     = require('browser-sync'),
+    gulp            = require('gulp'),
+    gulpClean       = require('gulp-clean'),
+    gulpConcat      = require('gulp-concat'),
+    gulpCssNano     = require('gulp-cssnano'),
+    gulpImageMin    = require('gulp-imagemin'),
+    gulpSass        = require('gulp-sass'),
+    gulpUglifyEs    = require('gulp-uglify-es').default,
+    pngQuant        = require('pngquant'),
+    args            = require('yargs').argv;
   
 const options = {
     dev: {
@@ -49,8 +49,16 @@ const options = {
  * Development tasks
  */
 
-gulp.task('args', () => {
-    console.log(args);
+gulp.task('dev-watch', function() {
+    let watchPath = `${options.dev.folder}/sass/**/*.sass`;
+
+    gulp.watch(
+        [watchPath],
+        gulp.parallel(['sass-to-css'])
+    );
+
+    console.log('======================================');
+    console.log('========= Watching is running ========');
 });
 
 /** @tag SassToCss */
