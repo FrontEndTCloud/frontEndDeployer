@@ -1,0 +1,31 @@
+{
+  "name": "frontenddeployer",
+  "version": "1.0.1",
+  "description": "The standard template to deploy front-end project.",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo 'test'"
+  },
+  "author": "TCloud",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssnano": "^2.1.3",
+    "gulp-imagemin": "^6.2.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify-es": "^2.0.0",
+    "nodemon": "^2.0.4",
+    "pngquant": "^3.0.0"
+  },
+  "keywords": [
+    "deployer"
+  ]
+}
