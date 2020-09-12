@@ -3,7 +3,7 @@ class ExampleClassOfEs6Standard {
   /**
    * @var {String}
    */
-  property1 = '1';
+  property1 = '3';
 
   /**
    * @var {Number}
