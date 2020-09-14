@@ -1,17 +1,15 @@
-class ExampleClassOfEs6Standard {
+/**
+ * @class ExampleClass
+ * @package src\Js
+ */
 
+class ExampleClass {
   /**
    * @var {String}
    */
-  property1 = '3';
+  $_property;
 
-  /**
-   * @var {Number}
-   */
-  property2 = 2;
-
-  constructor(prop1, prop2 = 2) {
-    this.property1 = prop1;
-    this.property2 = prop2;
+  constructor(property = '') {
+    this.$_property = property;
   }
 }

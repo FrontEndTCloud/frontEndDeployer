@@ -3,22 +3,23 @@
  * @since FontEndDeployer 1.0.1
  */
 
-const autoPrefixer = require('gulp-autoprefixer'),
-	browserSync = require('browser-sync'),
-	gulp = require('gulp'),
-	gulpClean = require('gulp-clean'),
-	gulpConcat = require('gulp-concat'),
-	gulpCssNano = require('gulp-cssnano'),
-	gulpImageMin = require('gulp-imagemin'),
-	gulpSass = require('gulp-sass'),
-	gulpUglifyEs = require('gulp-uglify-es').default,
-	pngQuant = require('pngquant'),
-	args = require('yargs').argv,
-	gulpBabel = require('gulp-babel'),
-	gulpMinify = require('gulp-minify')
-gulpCleanCss = require('gulp-clean-css');
+const autoPrefixer		= require('gulp-autoprefixer'),
+			browserSync 		= require('browser-sync'),
+			gulp 						= require('gulp'),
+			gulpClean 			= require('gulp-clean'),
+			gulpConcat 			= require('gulp-concat'),
+			gulpCssNano 		= require('gulp-cssnano'),
+			gulpImageMin 		= require('gulp-imagemin'),
+			gulpSass 				= require('gulp-sass'),
+			gulpUglifyEs 		= require('gulp-uglify-es').default,
+			pngQuant 				= require('pngquant'),
+			args 						= require('yargs').argv,
+			gulpBabel 			= require('gulp-babel'),
+			gulpMinify 			= require('gulp-minify')
+			gulpCleanCss 		= require('gulp-clean-css')
+			gulpRename 			= require('gulp-rename');
 
-const options = {
+var options = {
 	dev: {
 		folder: 'app',
 	},
@@ -53,6 +54,15 @@ const options = {
  * Production tasks
  */
 
+/** @tag ES6ToES5 */
+gulp.task('es6-to-es5', () => {
+	let jsPath = `${options.prod.folder}/js/**/*.js`;
+
+	return gulp.src(jsPath, options.src)
+		.pipe(gulpBabel())
+		.pipe(gulp.dest(`${options.prod.folder}/js`));
+});
+
 /** @tag Cleaner */
 gulp.task('clean', () => {
 	let path = (args.C)
@@ -85,6 +95,7 @@ gulp.task('compresCss', () => {
 			console.log(`${details.name}: ${details.stats.originalSize}`);
 			console.log(`${details.name}: ${details.stats.minifiedSize}`);
 		}))
+		.pipe(gulpRename({suffix: '.min'}))
 		.pipe(gulp.dest(`${options.prod.folder}/css/`));
 });
 
@@ -118,7 +129,7 @@ gulp.task('compresImages', () => {
 let buildTasks = [
 	'clean',
 	'buildCss', 'compresCss',
-	'buildjs', 'compresJs',
+	'buildjs', 'es6-to-es5', 'compresJs',
 	'compresImages',
 ];
 
@@ -134,29 +145,8 @@ gulp.task('sync', function () {
 		server: {
 			baseDir: `app`
 		},
-		notify: false
+		notify: true
 	});
-});
-
-gulp.task('dev-watch', gulp.parallel('sync'), () => {
-	gulp.watch(
-		[`${options.dev.folder}/sass/**/*.sass`],
-		gulp.parallel(['sass-to-css'])
-	);
-
-	gulp.watch(
-		[`${options.dev.folder}/**/*.html`],
-		browserSync.reload
-	);
-
-	gulp.watch(
-		[`${options.dev.folder}/**/*.js`],
-		browserSync.reload
-	);
-
-	console.log('======================================');
-	console.log('========= Watching is running ========');
-	console.log('======================================');
 });
 
 /** @tag SassToCss */
@@ -181,12 +171,45 @@ gulp.task('sass-to-css', () => {
 		);
 });
 
-/** @tag ES6ToES5 */
-gulp.task('es6-to-es5', () => {
-	let jsPath = `${options.js.folder}/**/*.js`;
-
-	return gulp.src(jsPath, options.src)
-		.pipe(gulpBabel())
-		.pipe(gulp.dest(options.js.folder));
+/** @tag HtmlWatcher */
+gulp.task('html-watch', function() {
+	return gulp.src(`${options.dev.folder}/*.html`)
+		.pipe(
+			browserSync.reload(
+				{stream: true}
+			)
+		)
 });
 
+/** @tag JavaScriptWatcher */
+gulp.task('javascript-watch', function() {
+	return gulp.src(`${options.dev.folder}/js/**/*.js`)
+		.pipe(
+			browserSync.reload(
+				{stream: true}
+			)
+		)
+});
+
+gulp.task('watch', () => {
+	gulp.watch(
+		[`${options.dev.folder}/sass/**/*.sass`],
+		gulp.parallel(['sass-to-css'])
+	);
+
+	gulp.watch(
+		[`${options.dev.folder}/**/*.html`],
+		gulp.parallel(['html-watch'])
+	);
+
+	gulp.watch(
+		[`${options.dev.folder}/**/*.js`],
+		gulp.parallel(['javascript-watch'])
+	);
+
+	console.log('======================================');
+	console.log('========= Watching is running ========');
+	console.log('======================================');
+});
+
+gulp.task('dev-watch', gulp.parallel('sass-to-css', 'watch', 'sync'));
