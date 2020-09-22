@@ -126,11 +126,29 @@ gulp.task('compresImages', () => {
 		.pipe(gulp.dest(`${options.prod.folder}/img/`));
 });
 
+gulp.task('buildFonts', () => {
+	return gulp.src(`${options.dev.folder}/fonts/**/*`, options.src)
+		.pipe(gulp.dest(`${options.prod.folder}/fonts/`));
+});
+
+gulp.task('buildHtml', () => {
+	return gulp.src(`${options.dev.folder}/**/*.html`, options.src)
+		.pipe(gulp.dest(`${options.prod.folder}/`));
+});
+
+gulp.task('buildLibs', () => {
+	return gulp.src(`${options.dev.folder}/libs/**/*`, options.src)
+		.pipe(gulp.dest(`${options.prod.folder}/libs/`));
+});
+
 let buildTasks = [
 	'clean',
 	'buildCss', 'compresCss',
 	'buildjs', 'es6-to-es5', 'compresJs',
 	'compresImages',
+	'buildFonts',
+	'buildLibs',
+	'buildHtml',
 ];
 
 gulp.task('build', gulp.series([...buildTasks]));
